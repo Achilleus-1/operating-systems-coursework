@@ -10,6 +10,16 @@
 #include <string.h>
 #include "mylinkedlist.h"
 
+/* ISO C replacement for POSIX strdup; avoid an undeclared pointer-returning call. */
+static char *copy_string(const char *value)
+{
+    if (value == NULL) return NULL;
+    size_t length = strlen(value) + 1;
+    char *copy = malloc(length);
+    if (copy != NULL) memcpy(copy, value, length);
+    return copy;
+}
+
 /*
  * Function: NewStudentCell
  * Usage: student_cell_T *element;
@@ -28,19 +38,19 @@ student_cell_T *NewStudentCell(char *id, double gpa, char *name)
         return NULL;
     }
 
-    element->id = strdup(id);
+    element->id = copy_string(id);
     if (element->id == NULL)
     {
-        fprintf(stderr, "Error: strdup failed for id\n");
+        fprintf(stderr, "Error: string copy failed for id\n");
         free(element);
         return NULL;
     }
 
     element->gpa = gpa;
-    element->name = strdup(name);
+    element->name = copy_string(name);
     if (element->name == NULL)
     {
-        fprintf(stderr, "Error: strdup failed for name\n");
+        fprintf(stderr, "Error: string copy failed for name\n");
         free(element->id);
         free(element);
         return NULL;

@@ -1,0 +1,15 @@
+[
+  {
+    "compiler": "gcc",
+    "sources": [
+      "linked-list-refresh/driver1.c",
+      "linked-list-refresh/mylinkedlist.c"
+    ]
+  },
+  {
+    "compiler": "gcc",
+    "sources": [
+      "virtual-memory-lru/main.c"
+    ]
+  }
+]

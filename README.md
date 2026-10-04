@@ -6,7 +6,7 @@ C linked-list exercises and a paged virtual-memory simulator with LRU replacemen
 
 - CS 3733-001 and CS 3733-004 — Operating Systems, Spring 2025
 
-Originally completed at the University of Texas at San Antonio during the terms above and imported to GitHub later. This repository preserves the submitted implementation; repository documentation and import housekeeping were added separately.
+Originally completed at the University of Texas at San Antonio and imported to GitHub later. This repository retains the coursework implementation with documented maintenance fixes and demonstration assets.
 
 **Languages and technologies:** C, POSIX/Unix toolchain, Make.
 
@@ -29,7 +29,7 @@ Originally completed at the University of Texas at San Antonio during the terms 
 
 ## Running the source
 
-Build the linked-list exercise with its supplied Makefile. Compile virtual-memory-lru/main.c with a C compiler. That program expects addresses.txt and BACKING_STORE.bin in its working directory; the binary backing store is deliberately not imported.
+See DEVELOPMENT.md for compile commands and the synthetic backing-store generator.
 
 ## Scope and limitations
 
@@ -37,3 +37,9 @@ Build the linked-list exercise with its supplied Makefile. Compile virtual-memor
 - The list driver/header includes supplied course scaffolding.
 
 Only source code, build configuration, and required text inputs are included. Written submissions, assignment instructions, PDFs, videos, generated outputs, binary builds, and private configuration are omitted. Anonymized contributor labels and supplied-code comments retain the distinction between submitted work and scaffolding. No license for course-provided material is inferred.
+
+## Development and reuse
+
+See [DEVELOPMENT.md](DEVELOPMENT.md) for reproducible checks and known archival dependencies, [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidance, and [SECURITY.md](SECURITY.md) for private reports.
+
+Reuse terms and provenance are documented in [NOTICE.md](NOTICE.md) and [LICENSE](LICENSE). The maintenance license does not grant rights to original course or team material.

@@ -42,9 +42,10 @@ int find_lru_frame() {
 
 
 // pull backingstore into virtual memory
-void load_page(FILE* backing_store, int page_number, int frame_number) {
-    fseek(backing_store, page_number * PAGE_SIZE, SEEK_SET);
-    fread(physical_memory[frame_number], sizeof(signed char), PAGE_SIZE, backing_store);
+int load_page(FILE* backing_store, int page_number, int frame_number) {
+    if (fseek(backing_store, page_number * PAGE_SIZE, SEEK_SET) != 0) return 0;
+    return fread(physical_memory[frame_number], sizeof(signed char), PAGE_SIZE,
+                 backing_store) == PAGE_SIZE;
 }
 
 
@@ -84,8 +85,14 @@ int main()
     int access_count = 0;
     int snapshot_500[NUM_PAGES];
     int snapshot_631[NUM_PAGES];
+    int read_status;
     // processes the locical addresses
-    while (fscanf(addr_file, "%d", &logical_address) != EOF) {
+    while ((read_status = fscanf(addr_file, "%d", &logical_address)) == 1) {
+        if (logical_address < 0 || logical_address >= NUM_PAGES * PAGE_SIZE) {
+            fprintf(stderr, "Address outside the 16-bit address space.\n");
+            fclose(addr_file); fclose(backing_store); fclose(output);
+            return 1;
+        }
         // pulls the page number and the offset
         int page_number = (logical_address >> 8) & 0xFF;
         int offset = logical_address & 0xFF;
@@ -104,7 +111,11 @@ int main()
             }
 
             // loads a new page and update tables
-            load_page(backing_store, page_number, frame_number);
+            if (!load_page(backing_store, page_number, frame_number)) {
+                fprintf(stderr, "Backing store is truncated or unreadable.\n");
+                fclose(addr_file); fclose(backing_store); fclose(output);
+                return 1;
+            }
             page_table[page_number] = frame_number;
             frame_usage[frame_number] = page_number;
         }
@@ -139,6 +150,11 @@ int main()
  
 
  
+    if (read_status != EOF || ferror(addr_file) || access_count == 0) {
+        fprintf(stderr, "Address input must contain at least one valid integer.\n");
+        fclose(addr_file); fclose(backing_store); fclose(output);
+        return 1;
+    }
     //just for printing all  stats and fault rate
 
     fprintf(output, "\n==== Summary Statistics ====\n");
@@ -148,8 +164,8 @@ int main()
 
     // Snapshot logs
 
-    write_snapshot(output, "After 500th Access", snapshot_500);
-    write_snapshot(output, "After 631st Access", snapshot_631);
+    if (access_count >= 500) write_snapshot(output, "After 500th Access", snapshot_500);
+    if (access_count >= 631) write_snapshot(output, "After 631st Access", snapshot_631);
 
     // close files with required fclose
     fclose(addr_file);
